@@ -1,9 +1,11 @@
+from enum import Enum
 import baza
 import sqlite3
 
 conn = sqlite3.connect('filmi.db')
 baza.ustvari_bazo_ce_ne_obstaja(conn)
 conn.execute('PRAGMA foreign_keys = ON')
+
 
 class Film:
     def __init__(self, id, naslov, leto, ocena):
@@ -25,11 +27,8 @@ class Film:
             ORDER BY ocena DESC
             LIMIT 10
         '''
-
-        film = []
         for id, naslov, leto, ocena in conn.execute(sql, [leto]):
-            film.append(Film(id, naslov, leto, ocena))
-        return film
+            yield Film(id, naslov, leto, ocena)
 
 
 class Oseba:
@@ -48,7 +47,8 @@ class Oseba:
             WHERE vloga.oseba = ?
             ORDER BY leto
         '''
-        return conn.execute(sql, [self.id]).fetchall()
+        for naslov, leto, tip_vloge in conn.execute(sql, [self.id]):
+            yield (naslov, leto, TipVloge[tip_vloge])
 
     @staticmethod
     def poisci(niz):
@@ -56,7 +56,13 @@ class Oseba:
         sql = '''
             SELECT id, ime FROM oseba WHERE ime LIKE ?
         '''
-        osebe = []
         for id, ime in conn.execute(sql, ['%' + niz + '%']):
-            osebe.append(Oseba(id, ime))
-        return osebe
+            yield Oseba(id, ime)
+
+
+class TipVloge(Enum):
+    I = 'igralec'
+    R = 'režiser'
+
+    def __str__(self):
+        return self.value
