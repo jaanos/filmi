@@ -1,4 +1,4 @@
-from enum import Enum
+from pomozne_funkcije import Seznam
 import baza
 import sqlite3
 
@@ -126,15 +126,9 @@ class Oseba:
             self.id = oseba.dodaj_vrstico([self.ime], self.insert)
 
 
-class TipVloge(Enum):
+class TipVloge(Seznam):
     """
     Oznake za tip vloge.
     """
     I = 'igralec'
     R = 'režiser'
-
-    def __str__(self):
-        """
-        Znakovna predstavitev tipa vloge.
-        """
-        return self.value

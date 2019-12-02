@@ -1,24 +1,5 @@
-from enum import Enum
+from pomozne_funkcije import Meni, JaNe, prekinitev
 from model import Film, Oseba
-
-
-class Meni(Enum):
-    """
-    Razred za izbire v menijih.
-    """
-    def __init__(self, ime, funkcija):
-        """
-        Konstruktor izbire.
-        """
-        self.ime = ime
-        self.funkcija = funkcija
-
-    def __str__(self):
-        """
-        Znakovna predstavitev izbire.
-        """
-        return self.ime
-
 
 def izpisi_vloge(igralec):
     """
@@ -56,6 +37,7 @@ def poisci_osebo():
             return vnesi_izbiro(osebe)
 
 
+@prekinitev
 def iskanje_osebe():
     """
     Izpiše vloge za osebo, ki jo vnese uporabnik.
@@ -64,6 +46,7 @@ def iskanje_osebe():
     izpisi_vloge(oseba)
 
 
+@prekinitev
 def najboljsi_filmi():
     """
     Izpiše najboljših 10 filmov v letu, ki ga vnese uporabnik.
@@ -74,6 +57,7 @@ def najboljsi_filmi():
         print(f'{mesto}) {film.naslov} ({film.ocena}/10)')
 
 
+@prekinitev
 def dodajanje_osebe():
     """
     Doda osebo z imenom, ki ga vnese uporabnik.
@@ -84,6 +68,7 @@ def dodajanje_osebe():
     print(f'Oseba {ime} dodana z ID-jem {oseba.id}.')
 
 
+@prekinitev
 def dodajanje_filma():
     """
     Doda film s podatki, ki jih vnese uporabnik.
@@ -104,8 +89,8 @@ def dodajanje_filma():
     reziserji = []
     while True:
         print("Ali želiš dodati režiserja?")
-        dodaj = vnesi_izbiro(["Ja", "Ne"])
-        if dodaj == "Ne":
+        dodaj = vnesi_izbiro(JaNe)
+        if dodaj == JaNe.NE:
             break
         oseba = poisci_osebo()
         reziserji.append(oseba)
@@ -113,8 +98,8 @@ def dodajanje_filma():
     igralci = []
     while True:
         print("Ali želiš dodati igralca?")
-        dodaj = vnesi_izbiro(["Ja", "Ne"])
-        if dodaj == "Ne":
+        dodaj = vnesi_izbiro(JaNe)
+        if dodaj == JaNe.NE:
             break
         oseba = poisci_osebo()
         igralci.append(oseba)
@@ -142,6 +127,7 @@ class GlavniMeni(Meni):
     SEL_DOMOV = ('Šel domov', domov)
 
 
+@prekinitev
 def glavni_meni():
     """
     Prikazuje glavni meni, dokler uporabnik ne izbere izhoda.
