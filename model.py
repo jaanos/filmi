@@ -50,22 +50,26 @@ class Film:
             yield Film(id, naslov, leto, ocena)
 
     def dodaj_film(self, reziserji, igralci):
+        """
+        V bazo doda film s podanimi režiserji in igralci
+        """
         assert self.id is None
         with conn:
-            self.id = film.dodaj_vrstico(
+            id = film.dodaj_vrstico(
                 [self.naslov, self.leto, self.ocena],
                 self.insert
             )
             for oseba in reziserji:
                 vloga.dodaj_vrstico(
-                    [self.id, oseba.id, TipVloge.R.name],
+                    [id, oseba.id, TipVloge.R.name],
                     self.insert_vloga
                 )
             for oseba in igralci:
                 vloga.dodaj_vrstico(
-                    [self.id, oseba.id, TipVloge.I.name],
+                    [id, oseba.id, TipVloge.I.name],
                     self.insert_vloga
                 )
+            self.id = id
 
 
 class Oseba:
@@ -114,6 +118,9 @@ class Oseba:
             yield Oseba(id, ime)
 
     def dodaj_osebo(self):
+        """
+        Doda osebo v bazo.
+        """
         assert self.id is None
         with conn:
             self.id = oseba.dodaj_vrstico([self.ime], self.insert)

@@ -75,6 +75,9 @@ def najboljsi_filmi():
 
 
 def dodajanje_osebe():
+    """
+    Doda osebo z imenom, ki ga vnese uporabnik.
+    """
     ime = input('Napiši ime osebe, ki jo želiš dodati: ')
     oseba = Oseba(None, ime)
     oseba.dodaj_osebo()
@@ -82,6 +85,9 @@ def dodajanje_osebe():
 
 
 def dodajanje_filma():
+    """
+    Doda film s podatki, ki jih vnese uporabnik.
+    """
     naslov = input("Napiši naslov filma: ")
     leto = None
     while leto is None:
