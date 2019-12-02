@@ -6,11 +6,16 @@ conn = sqlite3.connect('filmi.db')
 baza.ustvari_bazo_ce_ne_obstaja(conn)
 conn.execute('PRAGMA foreign_keys = ON')
 
+zanr, oznaka, film, oseba, vloga, pripada = baza.pripravi_tabele(conn)
+
 
 class Film:
     """
     Razred za film.
     """
+
+    insert = film.dodajanje(["naslov", "leto", "ocena"])
+    insert_vloga = vloga.dodajanje(["film", "oseba", "tip"])
 
     def __init__(self, id, naslov, leto, ocena):
         """
@@ -44,11 +49,31 @@ class Film:
         for id, naslov, leto, ocena in conn.execute(sql, [leto]):
             yield Film(id, naslov, leto, ocena)
 
+    def dodaj_film(self, reziserji, igralci):
+        assert self.id is None
+        with conn:
+            self.id = film.dodaj_vrstico(
+                [self.naslov, self.leto, self.ocena],
+                self.insert
+            )
+            for oseba in reziserji:
+                vloga.dodaj_vrstico(
+                    [self.id, oseba.id, TipVloge.R.name],
+                    self.insert_vloga
+                )
+            for oseba in igralci:
+                vloga.dodaj_vrstico(
+                    [self.id, oseba.id, TipVloge.I.name],
+                    self.insert_vloga
+                )
+
 
 class Oseba:
     """
     Razred za osebo.
     """
+
+    insert = oseba.dodajanje(["ime"])
 
     def __init__(self, id, ime):
         """
@@ -87,6 +112,11 @@ class Oseba:
         sql = "SELECT id, ime FROM oseba WHERE ime LIKE ?"
         for id, ime in conn.execute(sql, ['%' + niz + '%']):
             yield Oseba(id, ime)
+
+    def dodaj_osebo(self):
+        assert self.id is None
+        with conn:
+            self.id = oseba.dodaj_vrstico([self.ime], self.insert)
 
 
 class TipVloge(Enum):

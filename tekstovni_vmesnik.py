@@ -74,6 +74,50 @@ def najboljsi_filmi():
         print(f'{mesto}) {film.naslov} ({film.ocena}/10)')
 
 
+def dodajanje_osebe():
+    ime = input('Napiši ime osebe, ki jo želiš dodati: ')
+    oseba = Oseba(None, ime)
+    oseba.dodaj_osebo()
+    print(f'Oseba {ime} dodana z ID-jem {oseba.id}.')
+
+
+def dodajanje_filma():
+    naslov = input("Napiši naslov filma: ")
+    leto = None
+    while leto is None:
+        try:
+            leto = int(input("Napiši leto: "))
+        except ValueError:
+            print("Leto mora biti celo število!")
+    ocena = None
+    while ocena is None:
+        try:
+            ocena = float(input("Napiši oceno: "))
+        except ValueError:
+            print("Ocena mora biti število!")
+    reziserji = []
+    while True:
+        print("Ali želiš dodati režiserja?")
+        dodaj = vnesi_izbiro(["Ja", "Ne"])
+        if dodaj == "Ne":
+            break
+        oseba = poisci_osebo()
+        reziserji.append(oseba)
+        print(f"Dodan režiser {oseba.ime}.")
+    igralci = []
+    while True:
+        print("Ali želiš dodati igralca?")
+        dodaj = vnesi_izbiro(["Ja", "Ne"])
+        if dodaj == "Ne":
+            break
+        oseba = poisci_osebo()
+        igralci.append(oseba)
+        print(f"Dodan igralec {oseba.ime}.")
+    film = Film(None, naslov, leto, ocena)
+    film.dodaj_film(reziserji, igralci)
+    print(f'Film {naslov} ({leto}) dodan z ID-jem {film.id}.')
+
+
 def domov():
     """
     Pozdravi pred izhodom.
@@ -87,6 +131,8 @@ class GlavniMeni(Meni):
     """
     ISKAL_OSEBO = ('Iskal osebo', iskanje_osebe)
     POGLEDAL_DOBRE_FILME = ('Pogledal dobre filme', najboljsi_filmi)
+    DODAL_OSEBO = ('Dodal osebo', dodajanje_osebe)
+    DODAL_FILM = ('Dodal film', dodajanje_filma)
     SEL_DOMOV = ('Šel domov', domov)
 
 

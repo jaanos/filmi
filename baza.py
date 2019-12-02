@@ -7,11 +7,9 @@ class Tabela:
     Polja razreda:
     - ime: ime tabele
     - podatki: datoteka s podatki ali None
-    - id: stolpec z lastnostjo AUTOINCREMENT ali None
     """
     ime = None
     podatki = None
-    id = None
 
     def __init__(self, conn):
         """
@@ -95,8 +93,7 @@ class Tabela:
         if poizvedba is None:
             poizvedba = self.dodajanje(stevilo=len(podatki))
         cur = self.conn.execute(poizvedba, podatki)
-        if self.id is not None:
-            return cur.lastrowid
+        return cur.lastrowid
 
 
 class Zanr(Tabela):
@@ -104,7 +101,6 @@ class Zanr(Tabela):
     Tabela za žanre.
     """
     ime = "zanr"
-    id = "id"
 
     def ustvari(self):
         """
@@ -163,7 +159,7 @@ class Oznaka(Tabela):
         """, podatki)
         r = cur.fetchone()
         if r is None:
-            super().dodaj_vrstico(podatki, poizvedba)
+            return super().dodaj_vrstico(podatki, poizvedba)
 
 
 class Film(Tabela):
@@ -228,12 +224,12 @@ class Film(Tabela):
         - insert: poizvedba za dodajanje oznake
         - oznaka: indeks stolpca z oznako
         """
-        assert oznaka is not None
-        if insert is None:
-            insert = self.oznaka.dodajanje(1)
-        if podatki[oznaka] is not None:
-            self.oznaka.dodaj_vrstico([podatki[oznaka]], insert)
-        super().dodaj_vrstico(podatki, poizvedba)
+        if oznaka is not None:
+            if insert is None:
+                insert = self.oznaka.dodajanje(1)
+            if podatki[oznaka] is not None:
+                self.oznaka.dodaj_vrstico([podatki[oznaka]], insert)
+        return super().dodaj_vrstico(podatki, poizvedba)
 
 
 class Oseba(Tabela):
@@ -346,7 +342,7 @@ class Pripada(Tabela):
         if insert is None:
             insert = self.zanr.dodajanje(["naziv"])
         podatki[naziv] = self.zanr.dodaj_vrstico([podatki[naziv]], insert)
-        super().dodaj_vrstico(podatki, poizvedba)
+        return super().dodaj_vrstico(podatki, poizvedba)
 
 
 def ustvari_tabele(tabele):
