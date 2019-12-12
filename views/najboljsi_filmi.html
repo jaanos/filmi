@@ -1,0 +1,16 @@
+<html>
+    <head>
+        <title>Najboljši filmi v letu {{leto}}</title>
+    </head>
+    <body>
+        <h1>Najboljši filmi v letu {{leto}}</h1>
+
+        <ol>
+        % for film in filmi:
+            <li>
+                {{film.naslov}} <small>{{film.ocena}}/10</small>
+            </li>
+        % end
+        </ol>
+    </body>
+</html>
