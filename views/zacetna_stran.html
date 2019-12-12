@@ -1,0 +1,20 @@
+<html>
+    <head>
+        <title>Filmi</title>
+    </head>
+    <body>
+        <h1><a href="/">Filmi</a></h1>
+
+        <p>
+            Pozdravljen v bazi filmov! Kaj bi rad?
+        </p>
+        <ul>
+        % for leto in leta:
+            <li>
+                Najboljši filmi v letu
+                <a href="/najboljsi/{{leto}}/">{{leto}}</a>
+            </li>
+        % end
+        </ul>
+    </body>
+</html>

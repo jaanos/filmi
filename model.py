@@ -42,7 +42,7 @@ class Film:
         sql = """
             SELECT id, naslov, leto, ocena
             FROM film
-            WHERE leto = ?
+            WHERE leto = ? AND glasovi > 100000
             ORDER BY ocena DESC
             LIMIT 10
         """
