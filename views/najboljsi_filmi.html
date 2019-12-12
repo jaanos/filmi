@@ -1,18 +1,10 @@
-<html>
-    <head>
-        <title>Najboljši filmi v letu {{leto}}</title>
-    </head>
-    <body>
-        <h1><a href="/">Filmi</a></h1>
+% rebase('osnova.html')
+<h2>Najboljši filmi v letu {{leto}}</h2>
 
-        <h2>Najboljši filmi v letu {{leto}}</h2>
-
-        <ol>
-        % for film in filmi:
-            <li>
-                {{film.naslov}} <small>{{film.ocena}}/10</small>
-            </li>
-        % end
-        </ol>
-    </body>
-</html>
+<ol>
+% for film in filmi:
+    <li>
+        {{film.naslov}} <small>{{film.ocena}}/10</small>
+    </li>
+% end
+</ol>
