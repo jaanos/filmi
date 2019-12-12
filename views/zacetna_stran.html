@@ -1,12 +1,21 @@
 % rebase('osnova.html')
-<p>
-    Pozdravljen v bazi filmov! Kaj bi rad?
-</p>
+<section class="hero">
+    <div class="hero-body">
+        <div class="container">
+            <h1 class="title">
+                Filmi
+            </h1>
+            <h2 class="subtitle">
+                najboljša stran za filme
+            </h2>
+        </div>
+    </div>
+</section>
 <ul>
-% for leto in leta:
+    % for leto in leta:
     <li>
         Najboljši filmi v letu
         <a href="/najboljsi/{{leto}}/">{{leto}}</a>
     </li>
-% end
+    % end
 </ul>
