@@ -1,5 +1,5 @@
 import bottle
-from model import Film
+from model import Film, Oseba
 
 
 @bottle.get('/')
@@ -16,6 +16,17 @@ def najboljsi_filmi(leto):
         'najboljsi_filmi.html',
         leto=leto,
         filmi=Film.najboljsi_v_letu(leto)
+    )
+
+
+@bottle.get('/isci/')
+def isci():
+    iskalni_niz = bottle.request.query['iskalni_niz']
+    osebe = Oseba.poisci(iskalni_niz)
+    return bottle.template(
+        'rezultati_iskanja.html',
+        iskalni_niz=iskalni_niz,
+        osebe=osebe
     )
 
 
