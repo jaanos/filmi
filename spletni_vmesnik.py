@@ -1,10 +1,19 @@
 import json
+import random
 import bottle
 from model import Film, Oseba
 
-with open('nastavitve.json') as f:
-    nastavitve = json.load(f)
-    SKRIVNOST = nastavitve['skrivnost']
+NASTAVITVE = 'nastavitve.json'
+
+try:
+    with open(NASTAVITVE) as f:
+        nastavitve = json.load(f)
+        SKRIVNOST = nastavitve['skrivnost']
+except FileNotFoundError:
+    SKRIVNOST = "".join(chr(random.randrange(32, 128)) for _ in range(32))
+    with open(NASTAVITVE, "w") as f:
+        json.dump({'skrivnost': SKRIVNOST}, f)
+
 
 def zahtevaj_prijavo():
     if bottle.request.get_cookie('uporabnik', secret=SKRIVNOST) != 'admin':
