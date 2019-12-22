@@ -49,7 +49,7 @@ class Film:
         for id, naslov, leto, ocena in conn.execute(sql, [leto]):
             yield Film(id, naslov, leto, ocena)
 
-    def dodaj_film(self, reziserji, igralci):
+    def dodaj_v_bazo(self, reziserji, igralci):
         """
         V bazo doda film s podanimi režiserji in igralci
         """
