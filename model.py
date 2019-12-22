@@ -79,7 +79,7 @@ class Oseba:
 
     insert = oseba.dodajanje(["ime"])
 
-    def __init__(self, id, ime):
+    def __init__(self, ime, id=None):
         """
         Konstruktor osebe.
         """
@@ -115,9 +115,9 @@ class Oseba:
         """
         sql = "SELECT id, ime FROM oseba WHERE ime LIKE ?"
         for id, ime in conn.execute(sql, ['%' + niz + '%']):
-            yield Oseba(id, ime)
+            yield Oseba(ime=ime, id=id)
 
-    def dodaj_osebo(self):
+    def dodaj_v_bazo(self):
         """
         Doda osebo v bazo.
         """
