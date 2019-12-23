@@ -1,7 +1,7 @@
 import json
 import random
 import bottle
-from model import Film, Oseba
+from model import LoginError, Uporabnik, Film, Oseba
 
 NASTAVITVE = 'nastavitve.json'
 
@@ -32,14 +32,21 @@ def prijava():
 def prijava_post():
     ime = bottle.request.forms['uporabnisko_ime']
     geslo = bottle.request.forms['geslo']
-    if ime == geslo:
+    try:
+        Uporabnik.prijava(ime, geslo)
         bottle.response.set_cookie('uporabnik', ime, path='/', secret=SKRIVNOST)
         bottle.redirect('/')
-    else:
+    except LoginError:
         return bottle.template(
             'prijava.html',
             napaka='Uporabniško ime in geslo se ne ujemata!'
         )
+
+
+@bottle.get('/odjava/')
+def odjava():
+    bottle.response.delete_cookie('uporabnik', path='/')
+    bottle.redirect('/')
 
 
 @bottle.get('/')

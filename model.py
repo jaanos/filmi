@@ -1,6 +1,7 @@
 from pomozne_funkcije import Seznam
 import baza
 import sqlite3
+from geslo import sifriraj_geslo, preveri_geslo
 
 conn = sqlite3.connect('filmi.db')
 baza.ustvari_bazo_ce_ne_obstaja(conn)
@@ -8,6 +9,64 @@ conn.execute('PRAGMA foreign_keys = ON')
 
 uporabnik, zanr, oznaka, film, oseba, vloga, pripada = baza.pripravi_tabele(conn)
 
+
+class LoginError(Exception):
+    """
+    Napaka ob napačnem uporabniškem imenu ali geslu.
+    """
+    pass
+
+
+class Uporabnik:
+    """
+    Razred za uporabnika.
+    """
+
+    insert = uporabnik.dodajanje(["ime", "zgostitev", "sol"])
+
+    def __init__(self, id, ime):
+        """
+        Konstruktor uporabnika.
+        """
+        self.id = id
+        self.ime = ime
+
+    def __str__(self):
+        """
+        Znakovna predstavitev uporabnika.
+
+        Vrne uporabniško ime.
+        """
+        return self.ime
+
+    @staticmethod
+    def prijava(ime, geslo):
+        """
+        Preveri, ali sta uporabniško ime geslo pravilna.
+        """
+        sql = """
+            SELECT id, zgostitev, sol FROM uporabnik
+            WHERE ime = ?
+        """
+        try:
+            id, zgostitev, sol = conn.execute(sql, [ime]).fetchone()
+            if preveri_geslo(geslo, zgostitev, sol):
+                return Uporabnik(id, ime)
+        except TypeError:
+            pass
+        raise LoginError(ime)
+
+    def dodaj_v_bazo(self, geslo):
+        """
+        V bazo doda uporabnika s podanim geslom.
+        """
+        assert self.id is None
+        zgostitev, sol = sifriraj_geslo(geslo)
+        with conn:
+            self.id = uporabnik.dodaj_vrstico(
+                [self.ime, zgostitev, sol],
+                self.insert
+            )
 
 class Film:
     """

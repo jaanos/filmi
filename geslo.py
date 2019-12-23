@@ -2,6 +2,7 @@ import os
 import hashlib
 import hmac
 
+
 def zgosti(geslo, sol):
     """
     Vrne zgostitev gesla pri podani soli.
@@ -11,6 +12,7 @@ def zgosti(geslo, sol):
     """
     return hashlib.pbkdf2_hmac('sha256', geslo.encode('utf-8'), sol, 100000)
 
+
 def sifriraj_geslo(geslo):
     """
     Vrne zgoščeno geslo skupaj z uporabljeno soljo.
@@ -19,12 +21,13 @@ def sifriraj_geslo(geslo):
     zgostitev = zgosti(geslo, sol)
     return (zgostitev.hex(), sol.hex())
 
+
 def preveri_geslo(geslo, zgostitev, sol):
     """
     Preveri, ali podano geslo ustreza podani zgostitvi in soli.
     """
     try:
         return hmac.compare_digest(bytes.fromhex(zgostitev),
-                                zgosti(geslo, bytes.fromhex(sol)))
+                                   zgosti(geslo, bytes.fromhex(sol)))
     except ValueError:
         return False
