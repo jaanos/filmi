@@ -132,7 +132,7 @@ class Uporabnik(Tabela):
 
         Če sol ni podana, zašifrira podano geslo.
         """
-        if podatki[sol] is None:
+        if sol is not None and zgostitev is not None and podatki[sol] is None:
             podatki[zgostitev], podatki[sol] = sifriraj_geslo(podatki[zgostitev])
         return super().dodaj_vrstico(podatki, poizvedba)
 

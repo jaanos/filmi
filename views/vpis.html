@@ -1,5 +1,5 @@
 % rebase('osnova.html')
-<h2>Prijavi se</h2>
+<h2>Vpiši se</h2>
 
 <form method="POST">
     <div class="field">
@@ -12,7 +12,14 @@
     <div class="field">
         <label class="label">Geslo</label>
         <div class="control">
-            <input class="input" type="password" name="geslo">
+            <input class="input" type="password" name="geslo1">
+        </div>
+    </div>
+
+    <div class="field">
+        <label class="label">Ponovi geslo</label>
+        <div class="control">
+            <input class="input" type="password" name="geslo2">
         </div>
         % if napaka:
         <p class="help is-danger">{{napaka}}</p>
@@ -21,6 +28,6 @@
 
     <div class="field">
         <div class="control">
-            <button class="button">Prijavi se!</button>
+            <button class="button">Vpiši se!</button>
         </div>
 </form>

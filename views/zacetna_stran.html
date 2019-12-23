@@ -11,6 +11,15 @@
         </div>
     </div>
 </section>
+<div>
+    % if ime:
+        Prijavljen uporabnik: {{ime}}
+        (<a href="/odjava/">odjava</a>)
+    % else:
+    <a href="/prijava/">prijava</a> | 
+    <a href="/vpis/">vpis</a>
+    % end
+</div>
 <form action="/isci/">
     <div class="field">
         <label class="label">Iskalni niz</label>

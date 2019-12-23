@@ -1,6 +1,7 @@
 import json
 import random
 import bottle
+from sqlite3 import IntegrityError
 from model import LoginError, Uporabnik, Film, Oseba
 
 NASTAVITVE = 'nastavitve.json'
@@ -20,26 +21,70 @@ def zahtevaj_prijavo():
         bottle.abort(401, 'Nimate pravice za urejanje!')
 
 
+def zahtevaj_odjavo():
+    if bottle.request.get_cookie('uporabnik', secret=SKRIVNOST):
+        bottle.redirect('/')
+
+
 @bottle.get('/prijava/')
 def prijava():
+    zahtevaj_odjavo()
     return bottle.template(
         'prijava.html',
-        napaka=None
+        napaka=None, ime=""
     )
 
 
 @bottle.post('/prijava/')
 def prijava_post():
+    zahtevaj_odjavo()
     ime = bottle.request.forms['uporabnisko_ime']
     geslo = bottle.request.forms['geslo']
     try:
-        Uporabnik.prijava(ime, geslo)
+        uporabnik = Uporabnik.prijava(ime, geslo)
         bottle.response.set_cookie('uporabnik', ime, path='/', secret=SKRIVNOST)
+        bottle.response.set_cookie('uid', uporabnik.id, path='/', secret=SKRIVNOST)
         bottle.redirect('/')
     except LoginError:
         return bottle.template(
             'prijava.html',
-            napaka='Uporabniško ime in geslo se ne ujemata!'
+            napaka='Uporabniško ime in geslo se ne ujemata!',
+            ime=ime
+        )
+
+
+@bottle.get('/vpis/')
+def vpis():
+    zahtevaj_odjavo()
+    return bottle.template(
+        'vpis.html',
+        napaka=None, ime=""
+    )
+
+
+@bottle.post('/vpis/')
+def vpis_post():
+    zahtevaj_odjavo()
+    ime = bottle.request.forms['uporabnisko_ime']
+    geslo1 = bottle.request.forms['geslo1']
+    geslo2 = bottle.request.forms['geslo2']
+    if geslo1 != geslo2:
+        return bottle.template(
+            'vpis.html',
+            napaka='Gesli se ne ujemata!',
+            ime=ime
+        )
+    try:
+        uporabnik = Uporabnik(ime)
+        uporabnik.dodaj_v_bazo(geslo1)
+        bottle.response.set_cookie('uporabnik', ime, path='/', secret=SKRIVNOST)
+        bottle.response.set_cookie('uid', uporabnik.id, path='/', secret=SKRIVNOST)
+        bottle.redirect('/')
+    except IntegrityError:
+        return bottle.template(
+            'vpis.html',
+            napaka='Uporabniško ime že obstaja!',
+            ime=ime
         )
 
 
@@ -54,6 +99,7 @@ def zacetna_stran():
     return bottle.template(
         'zacetna_stran.html',
         leta=range(1950, 2020),
+        ime=bottle.request.get_cookie('uporabnik', secret=SKRIVNOST)
     )
 
 
@@ -71,18 +117,19 @@ def dodaj_osebo():
     zahtevaj_prijavo()
     return bottle.template(
         'dodaj_osebo.html',
-        napaka=None
+        napaka=None, ime=""
     )
 
 
 @bottle.post('/dodaj-osebo/')
 def dodaj_osebo_post():
     zahtevaj_prijavo()
-    ime = bottle.request.forms['ime']
+    ime = bottle.request.forms.getunicode('ime')
     if not ime[0].isupper():
         return bottle.template(
             'dodaj_osebo.html',
-            napaka='Ime se mora začeti z veliko začetnico!'
+            napaka='Ime se mora začeti z veliko začetnico!',
+            ime=ime
         )
     else:
         oseba = Oseba(ime)

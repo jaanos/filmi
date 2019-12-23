@@ -24,7 +24,7 @@ class Uporabnik:
 
     insert = uporabnik.dodajanje(["ime", "zgostitev", "sol"])
 
-    def __init__(self, id, ime):
+    def __init__(self, ime, id=None):
         """
         Konstruktor uporabnika.
         """
@@ -51,7 +51,7 @@ class Uporabnik:
         try:
             id, zgostitev, sol = conn.execute(sql, [ime]).fetchone()
             if preveri_geslo(geslo, zgostitev, sol):
-                return Uporabnik(id, ime)
+                return Uporabnik(ime, id)
         except TypeError:
             pass
         raise LoginError(ime)
