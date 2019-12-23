@@ -27,6 +27,7 @@ def prijava():
         napaka=None
     )
 
+
 @bottle.post('/prijava/')
 def prijava_post():
     ime = bottle.request.forms['uporabnisko_ime']
@@ -39,7 +40,6 @@ def prijava_post():
             'prijava.html',
             napaka='Uporabniško ime in geslo se ne ujemata!'
         )
-
 
 
 @bottle.get('/')
@@ -58,6 +58,7 @@ def najboljsi_filmi(leto):
         filmi=Film.najboljsi_v_letu(leto)
     )
 
+
 @bottle.get('/dodaj-osebo/')
 def dodaj_osebo():
     zahtevaj_prijavo()
@@ -65,6 +66,7 @@ def dodaj_osebo():
         'dodaj_osebo.html',
         napaka=None
     )
+
 
 @bottle.post('/dodaj-osebo/')
 def dodaj_osebo_post():
@@ -79,6 +81,7 @@ def dodaj_osebo_post():
         oseba = Oseba(ime)
         oseba.dodaj_v_bazo()
         bottle.redirect('/')
+
 
 @bottle.get('/isci/')
 def isci():

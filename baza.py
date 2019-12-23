@@ -1,4 +1,5 @@
 import csv
+from geslo import sifriraj_geslo
 
 class Tabela:
     """
@@ -95,6 +96,45 @@ class Tabela:
         cur = self.conn.execute(poizvedba, podatki)
         return cur.lastrowid
 
+
+class Uporabnik(Tabela):
+    """
+    Tabela za uporabnike.
+    """
+    ime = "uporabnik"
+    podatki = "podatki/uporabnik.csv"
+
+    def ustvari(self):
+        """
+        Ustvari tabelo uporabnik.
+        """
+        self.conn.execute("""
+            CREATE TABLE uporabnik (
+                id        INTEGER PRIMARY KEY AUTOINCREMENT,
+                ime       TEXT NOT NULL UNIQUE,
+                zgostitev TEXT NOT NULL,
+                sol       TEXT NOT NULL
+            )
+        """)
+
+    @staticmethod
+    def pretvori(stolpci, kwargs):
+        """
+        Zapomni si indeksa stolpcev za zgostitev in sol.
+        """
+        kwargs["zgostitev"] = stolpci.index("zgostitev")
+        kwargs["sol"] = stolpci.index("sol")
+        return stolpci
+
+    def dodaj_vrstico(self, podatki, poizvedba=None, zgostitev=None, sol=None):
+        """
+        Dodaj uporabnika.
+
+        Če sol ni podana, zašifrira podano geslo.
+        """
+        if podatki[sol] is None:
+            podatki[zgostitev], podatki[sol] = sifriraj_geslo(podatki[zgostitev])
+        return super().dodaj_vrstico(podatki, poizvedba)
 
 class Zanr(Tabela):
     """
@@ -391,13 +431,14 @@ def pripravi_tabele(conn):
     """
     Pripravi objekte za tabele.
     """
+    uporabnik = Uporabnik(conn)
     zanr = Zanr(conn)
     oznaka = Oznaka(conn)
     film = Film(conn, oznaka)
     oseba = Oseba(conn)
     vloga = Vloga(conn)
     pripada = Pripada(conn, zanr)
-    return [zanr, oznaka, film, oseba, vloga, pripada]
+    return [uporabnik, zanr, oznaka, film, oseba, vloga, pripada]
 
 
 def ustvari_bazo_ce_ne_obstaja(conn):
